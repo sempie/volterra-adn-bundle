@@ -1,0 +1,6 @@
+.cnab/
+.terraform*
+.terraform/
+*tfstate*
+*tfvars
+.dockerignore

@@ -1,0 +1,69 @@
+name: volterra-adn
+version: 0.0.1
+description: "Volterra Application Delivery Network Example"
+registry: ghcr.io/sempie
+dockerfile: Dockerfile.tmpl
+
+mixins:
+  - exec
+  - terraform:
+      clientVersion: 1.0.0
+  - kubernetes
+
+parameters:
+  - name: tfstate
+    type: file
+    path: /cnab/app/terraform/terraform.tfstate
+    source:
+      output: tfstate
+
+  - name: api_url
+    type: string
+    default: https://console.ves.volterra.io/api
+    env: TF_VAR_api_url
+
+  - name: cert_file_name
+    type: string
+    default: /cnab/app/api-creds.p12
+    env: TF_VAR_api_p12_file
+
+  - name: namespace
+    type: string
+    env: TF_VAR_namespace
+
+  - name: name
+    type: string
+    env: TF_VAR_name
+
+  - name: app_fqdn
+    type: string
+    env: TF_VAR_app_fqdn
+
+outputs:
+  - name: tfstate
+    type: file
+    path: /cnab/app/terraform/terraform.tfstate
+ 
+  - name: adn_app_url
+    type: string
+    applyTo:
+      - install
+
+credentials:
+  - name: cert_password
+    type: string
+    env: VES_P12_PASSWORD
+
+  - name: api_p12_file
+    type: file
+    path: /cnab/app/api-creds.p12
+
+install:
+  - terraform:
+      description: "Install ADN Demo on Volterra"
+      outputs:
+        - name: adn_app_url
+
+uninstall:
+  - terraform:
+      description: "Uninstall ADN Demo on Volterra"
