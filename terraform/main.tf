@@ -50,8 +50,8 @@ provider "volterra" {
 
 module "app-delivery-network" {
   source               		= "github.com/sempie/terraform-volterra-app-delivery-network"
-  adn_name             		= var.name
-  volterra_namespace   		= local.namespace
+  adn_name             		= "${random_string.sub_suffix.id}-${var.name}"
+  volterra_namespace   		= "${random_string.sub_suffix.id}-${local.namespace}"
   app_domain           		= "${random_string.sub_suffix.id}-${var.app_fqdn}"
   disable_js_challenge 		= var.disable_js_challenge
 }
